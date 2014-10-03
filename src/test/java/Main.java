@@ -25,7 +25,8 @@ public class Main {
         updateCustomer();*/
 //        findAllMerchants();
 //        findAllPaymentsByMerchant();
-        findCustomersByTotal();
+//        findCustomersByTotal();
+        totalPaymentsSum();
     }
 
     private static void createCustomer() {
@@ -138,5 +139,12 @@ public class Main {
             logger.info("{}", customer);
         }
 
+    }
+
+    private static void totalPaymentsSum(){
+        TypedQuery<Double> query = em.createQuery("SELECT SUM(p.total) FROM Payment p", Double.class);
+        Double sum = query.getSingleResult();
+        logger.info("Total sum = {}", sum);
+        em.close();
     }
 }
