@@ -13,11 +13,16 @@ public class Payment {
     private int id;
     private long dt;
 
-    @Column(name = "merchantId")
-    private int merchant;
 
-    @Column(name = "customerId")
-    private int customer;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "merchantId")
+    private Merchant merchant;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customerId")
+    private Customer customer;
+
     private String goods;
     private double total;
     private double charge;
@@ -25,7 +30,7 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(int id, long dt, int merchant, int customer, String goods, double total, double charge) {
+    public Payment(int id, long dt, Merchant merchant, Customer customer, String goods, double total, double charge) {
         this.id = id;
         this.dt = dt;
         this.merchant = merchant;
@@ -51,19 +56,19 @@ public class Payment {
         this.dt = dt;
     }
 
-    public int getMerchant() {
+    public Merchant getMerchant() {
         return merchant;
     }
 
-    public void setMerchant(int merchant) {
+    public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
 
-    public int getCustomer() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(int customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 

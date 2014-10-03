@@ -16,19 +16,20 @@ public class Main {
     final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     private static final String UNIT_NAME = "CashM";
-    private static EntityManagerFactory factory;
+    private static EntityManagerFactory factory = Persistence.createEntityManagerFactory(UNIT_NAME);
+    private static EntityManager em = factory.createEntityManager();
 
     public static void main(String[] args) {
         /*testFind();
         createCustomer();
         updateCustomer();*/
 //        findAllMerchants();
-        findAllPaymentsByMerchant();
+//        findAllPaymentsByMerchant();
+        findCustomersByTotal();
     }
 
     private static void createCustomer() {
-        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
+
 
         Customer customer = new Customer();
         customer.setAddress("Address");
@@ -50,8 +51,7 @@ public class Main {
     }
 
     private static void testFind() {
-        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
+
         Merchant merch = null;
         Customer customer = null;
         try {
@@ -72,8 +72,7 @@ public class Main {
     }
 
     private static void updateCustomer() {
-        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
+
         Customer customer = em.find(Customer.class, 9);
 
         try {
@@ -88,8 +87,6 @@ public class Main {
     }
 
     private static void findAllMerchants(){
-        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
 
         TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m WHERE m.total > 0", Merchant.class);
         List<Merchant> merchants = null;
@@ -108,11 +105,9 @@ public class Main {
     }
 
     private static void findAllPaymentsByMerchant(){
-        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
 
         Merchant merchant = em.find(Merchant.class, 2);
-        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p WHERE p.merchant = " + merchant.getId(), Payment.class);
+        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p", Payment.class);
         List<Payment> payments = null;
 
         try {
@@ -124,6 +119,23 @@ public class Main {
 
         for (Payment payment : payments) {
             logger.info("{}", payment);
+        }
+
+    }
+
+    private static void findCustomersByTotal(){
+        TypedQuery<Customer> query = em.createQuery("SELECT DISTINCT c FROM Customer c INNER JOIN Payment p ON p.customer = c WHERE p.total > 500", Customer.class);
+        List<Customer> customers = null;
+
+        try {
+            customers = query.getResultList();
+        } finally {
+            em.close();
+        }
+
+
+        for (Customer customer : customers) {
+            logger.info("{}", customer);
         }
 
     }
