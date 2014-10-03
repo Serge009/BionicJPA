@@ -101,11 +101,11 @@ public class Payment {
         return "Payment{" +
                 "id=" + id +
                 ", dt=" + dt +
-                ", merchant=" + merchant +
-                ", customer=" + customer +
                 ", goods='" + goods + '\'' +
                 ", total=" + total +
                 ", charge=" + charge +
-                '}';
+                '}' +
+                ",\n\t merchant=" + merchant +
+                ",\n\t customer=" + customer;
     }
 }

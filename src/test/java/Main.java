@@ -29,7 +29,8 @@ public class Main {
 //        findCustomersByTotal();
 //        totalPaymentsSum();
 //        findAndSortAllMerchants();
-        groupPayments();
+//        groupPayments();
+        findAllPayments();
     }
 
     private static void createCustomer() {
@@ -179,6 +180,22 @@ public class Main {
             }
         } finally {
             em.close();
+        }
+    }
+
+    private static void findAllPayments(){
+        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p", Payment.class);
+        List<Payment> payments = null;
+
+        try {
+            payments = query.getResultList();
+        } finally {
+            em.close();
+        }
+
+
+        for (Payment payment : payments) {
+            logger.info("{}", payment);
         }
     }
 }
