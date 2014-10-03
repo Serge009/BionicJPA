@@ -1,5 +1,6 @@
 import com.bionic.jpa.domain.Customer;
 import com.bionic.jpa.domain.Merchant;
+import com.bionic.jpa.domain.Payment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,8 @@ public class Main {
         /*testFind();
         createCustomer();
         updateCustomer();*/
-        findAllMerchants();
+//        findAllMerchants();
+        findAllPaymentsByMerchant();
     }
 
     private static void createCustomer() {
@@ -89,7 +91,7 @@ public class Main {
         factory = Persistence.createEntityManagerFactory(UNIT_NAME);
         EntityManager em = factory.createEntityManager();
 
-        TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m", Merchant.class);
+        TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m WHERE m.total > 0", Merchant.class);
         List<Merchant> merchants = null;
 
         try {
@@ -98,10 +100,31 @@ public class Main {
             em.close();
         }
 
-        if (merchants != null) {
+
             for (Merchant merchant : merchants) {
                 logger.info("{}", merchant);
             }
+
+    }
+
+    private static void findAllPaymentsByMerchant(){
+        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
+        EntityManager em = factory.createEntityManager();
+
+        Merchant merchant = em.find(Merchant.class, 2);
+        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p WHERE p.merchant = " + merchant.getId(), Payment.class);
+        List<Payment> payments = null;
+
+        try {
+            payments = query.getResultList();
+        } finally {
+            em.close();
         }
+
+
+        for (Payment payment : payments) {
+            logger.info("{}", payment);
+        }
+
     }
 }
