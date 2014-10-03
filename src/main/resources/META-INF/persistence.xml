@@ -5,6 +5,7 @@
     <persistence-unit transaction-type="RESOURCE_LOCAL" name="CashM">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>com.bionic.jpa.domain.Merchant</class>
+        <class>com.bionic.jpa.domain.Customer</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://94.158.70.196:5501/global_bionic" />

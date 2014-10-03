@@ -1,3 +1,4 @@
+import com.bionic.jpa.domain.Customer;
 import com.bionic.jpa.domain.Merchant;
 
 import javax.persistence.*;
@@ -13,14 +14,20 @@ public class Main {
         factory = Persistence.createEntityManagerFactory(UNIT_NAME);
         EntityManager em = factory.createEntityManager();
         Merchant merch = null;
+        Customer customer = null;
         try {
             merch = em.find(Merchant.class, 1);
+            customer = em.find(Customer.class, 1);
         } finally {
             em.close();
         }
 
         if (merch != null) {
             System.out.println(merch.getStringForPrint());
+        }
+
+        if (customer != null) {
+            System.out.println(customer);
         }
     }
 }
