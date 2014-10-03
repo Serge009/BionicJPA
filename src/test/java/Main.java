@@ -1,6 +1,7 @@
 import com.bionic.jpa.domain.Customer;
 import com.bionic.jpa.domain.Merchant;
 import com.bionic.jpa.domain.Payment;
+import com.bionic.jpa.domain.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,9 @@ public class Main {
 //        findAllMerchants();
 //        findAllPaymentsByMerchant();
 //        findCustomersByTotal();
-        totalPaymentsSum();
+//        totalPaymentsSum();
+//        findAndSortAllMerchants();
+        groupPayments();
     }
 
     private static void createCustomer() {
@@ -143,8 +146,39 @@ public class Main {
 
     private static void totalPaymentsSum(){
         TypedQuery<Double> query = em.createQuery("SELECT SUM(p.total) FROM Payment p", Double.class);
-        Double sum = query.getSingleResult();
-        logger.info("Total sum = {}", sum);
-        em.close();
+        try{
+            Double sum = query.getSingleResult();
+            logger.info("Total sum = {}", sum);
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void findAndSortAllMerchants(){
+        TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m ORDER BY m.name ASC", Merchant.class);
+        try{
+            List<Merchant> merchants = query.getResultList();
+            for (Merchant merchant : merchants) {
+                logger.info("{}", merchant);
+                for (Payment payment : merchant.getPayments()) {
+                    logger.info("{}", payment);
+                }
+            }
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void groupPayments(){
+        TypedQuery<Result> query = em.createQuery("SELECT new com.bionic.jpa.domain.Result(m.name, SUM(p.total)) from Payment p, Merchant m WHERE p.merchant = m GROUP BY m.name", Result.class);
+        try{
+            List<Result> results = query.getResultList();
+            for (Result result : results) {
+                logger.info("{}", result);
+
+            }
+        } finally {
+            em.close();
+        }
     }
 }

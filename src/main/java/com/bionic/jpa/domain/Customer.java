@@ -1,10 +1,8 @@
 package com.bionic.jpa.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 /**
  * Created by oper4 on 03.10.2014.
@@ -23,6 +21,9 @@ public class Customer {
     private String cctype;
     private Date maturity;
 
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Payment> payments;
+
     public Customer() {
     }
 
@@ -40,8 +41,8 @@ public class Customer {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public List<Payment> getPayments() {
+        return payments;
     }
 
     public String getName() {

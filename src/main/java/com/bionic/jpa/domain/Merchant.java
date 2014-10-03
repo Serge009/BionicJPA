@@ -1,6 +1,7 @@
 package com.bionic.jpa.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Matrix on 03.10.2014.
@@ -15,7 +16,14 @@ public class Merchant {
     private int period;
     private double total;
 
+    @OneToMany(mappedBy = "merchant", fetch = FetchType.EAGER)
+    private List<Payment> payments;
+
     public Merchant() {
+    }
+
+     public List<Payment> getPayments() {
+        return payments;
     }
 
     public int getId() {
