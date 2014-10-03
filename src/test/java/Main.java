@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 /**
  * Created by Matrix on 03.10.2014.
@@ -17,12 +18,13 @@ public class Main {
     private static EntityManagerFactory factory;
 
     public static void main(String[] args) {
-        testFind();
+        /*testFind();
         createCustomer();
-
+        updateCustomer();*/
+        findAllMerchants();
     }
 
-    private static void createCustomer(){
+    private static void createCustomer() {
         factory = Persistence.createEntityManagerFactory(UNIT_NAME);
         EntityManager em = factory.createEntityManager();
 
@@ -45,7 +47,7 @@ public class Main {
         logger.info("New Customer = {}", customer);
     }
 
-    private static void testFind(){
+    private static void testFind() {
         factory = Persistence.createEntityManagerFactory(UNIT_NAME);
         EntityManager em = factory.createEntityManager();
         Merchant merch = null;
@@ -64,6 +66,42 @@ public class Main {
 
         if (customer != null) {
             System.out.println(customer);
+        }
+    }
+
+    private static void updateCustomer() {
+        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
+        EntityManager em = factory.createEntityManager();
+        Customer customer = em.find(Customer.class, 9);
+
+        try {
+            em.getTransaction().begin();
+            customer.setAddress("New Address");
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+
+        logger.info("Customer updated: {}", customer);
+    }
+
+    private static void findAllMerchants(){
+        factory = Persistence.createEntityManagerFactory(UNIT_NAME);
+        EntityManager em = factory.createEntityManager();
+
+        TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m", Merchant.class);
+        List<Merchant> merchants = null;
+
+        try {
+            merchants = query.getResultList();
+        } finally {
+            em.close();
+        }
+
+        if (merchants != null) {
+            for (Merchant merchant : merchants) {
+                logger.info("{}", merchant);
+            }
         }
     }
 }

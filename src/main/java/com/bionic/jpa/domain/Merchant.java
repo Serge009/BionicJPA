@@ -63,4 +63,9 @@ public class Merchant {
         txt += "" + charge + ";   period = " + period + ";   total = " + total;
         return txt;
     }
+
+    @Override
+    public String toString() {
+        return getStringForPrint();
+    }
 }
