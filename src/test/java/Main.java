@@ -30,7 +30,10 @@ public class Main {
 //        totalPaymentsSum();
 //        findAndSortAllMerchants();
 //        groupPayments();
-        findAllPayments();
+//        findAllPayments();
+//        findMerchantPayments();
+//        findMerchantCustomers();
+        findCustomerMerchants();
     }
 
     private static void createCustomer() {
@@ -91,7 +94,7 @@ public class Main {
         logger.info("Customer updated: {}", customer);
     }
 
-    private static void findAllMerchants(){
+    private static void findAllMerchants() {
 
         TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m WHERE m.total > 0", Merchant.class);
         List<Merchant> merchants = null;
@@ -103,13 +106,13 @@ public class Main {
         }
 
 
-            for (Merchant merchant : merchants) {
-                logger.info("{}", merchant);
-            }
+        for (Merchant merchant : merchants) {
+            logger.info("{}", merchant);
+        }
 
     }
 
-    private static void findAllPaymentsByMerchant(){
+    private static void findAllPaymentsByMerchant() {
 
         Merchant merchant = em.find(Merchant.class, 2);
         TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p", Payment.class);
@@ -128,7 +131,7 @@ public class Main {
 
     }
 
-    private static void findCustomersByTotal(){
+    private static void findCustomersByTotal() {
         TypedQuery<Customer> query = em.createQuery("SELECT DISTINCT c FROM Customer c INNER JOIN Payment p ON p.customer = c WHERE p.total > 500", Customer.class);
         List<Customer> customers = null;
 
@@ -145,9 +148,9 @@ public class Main {
 
     }
 
-    private static void totalPaymentsSum(){
+    private static void totalPaymentsSum() {
         TypedQuery<Double> query = em.createQuery("SELECT SUM(p.total) FROM Payment p", Double.class);
-        try{
+        try {
             Double sum = query.getSingleResult();
             logger.info("Total sum = {}", sum);
         } finally {
@@ -155,9 +158,9 @@ public class Main {
         }
     }
 
-    private static void findAndSortAllMerchants(){
+    private static void findAndSortAllMerchants() {
         TypedQuery<Merchant> query = em.createQuery("SELECT m FROM Merchant m ORDER BY m.name ASC", Merchant.class);
-        try{
+        try {
             List<Merchant> merchants = query.getResultList();
             for (Merchant merchant : merchants) {
                 logger.info("{}", merchant);
@@ -170,9 +173,9 @@ public class Main {
         }
     }
 
-    private static void groupPayments(){
-        TypedQuery<Result> query = em.createQuery("SELECT new com.bionic.jpa.domain.Result(m.name, SUM(p.total)) from Payment p, Merchant m WHERE p.merchant = m GROUP BY m.name", Result.class);
-        try{
+    private static void groupPayments() {
+        TypedQuery<Result> query = em.createQuery("SELECT new com.bionic.jpa.domain.Result(p.merchant.name, SUM(p.total)) from Payment p GROUP BY p.merchant.name", Result.class);
+        try {
             List<Result> results = query.getResultList();
             for (Result result : results) {
                 logger.info("{}", result);
@@ -183,7 +186,7 @@ public class Main {
         }
     }
 
-    private static void findAllPayments(){
+    private static void findAllPayments() {
         TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p", Payment.class);
         List<Payment> payments = null;
 
@@ -198,4 +201,50 @@ public class Main {
             logger.info("{}", payment);
         }
     }
+
+    private static void findMerchantPayments() {
+        List<Payment> payments = null;
+
+        try {
+            payments = em.find(Merchant.class, 1).getPayments();
+        } finally {
+            em.close();
+        }
+
+
+        for (Payment payment : payments) {
+            logger.info("{}", payment);
+        }
+    }
+
+    private static void findMerchantCustomers() {
+        List<Customer> customers = null;
+
+        try {
+            customers = em.find(Merchant.class, 4).getCustomers();
+        } finally {
+            em.close();
+        }
+
+
+        for (Customer customer : customers) {
+            logger.info("{}", customer);
+        }
+    }
+
+    private static void findCustomerMerchants() {
+        List<Merchant> merchants = null;
+
+        try {
+            merchants = em.find(Customer.class, 1).getMerchants();
+        } finally {
+            em.close();
+        }
+
+
+        for (Merchant merchant : merchants) {
+            logger.info("{}", merchant);
+        }
+    }
+
 }

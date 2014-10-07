@@ -19,6 +19,15 @@ public class Merchant {
     @OneToMany(mappedBy = "merchant", fetch = FetchType.EAGER)
     private List<Payment> payments;
 
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="payment",
+            joinColumns=@JoinColumn(name="merchantId"),
+            inverseJoinColumns=@JoinColumn(name="customerId"))
+
+    private List<Customer> customers;
+
     public Merchant() {
     }
 
@@ -40,6 +49,10 @@ public class Merchant {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
     public double getCharge() {

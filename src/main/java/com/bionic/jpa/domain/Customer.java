@@ -21,6 +21,14 @@ public class Customer {
     private String cctype;
     private Date maturity;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="payment",
+            joinColumns=@JoinColumn(name="customerId"),
+            inverseJoinColumns=
+            @JoinColumn(name="merchantId"))
+
+    private List<Merchant> merchants;
+
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Payment> payments;
 
@@ -35,6 +43,10 @@ public class Customer {
         this.ccno = ccno;
         this.cctype = cctype;
         this.maturity = maturity;
+    }
+
+    public List<Merchant> getMerchants() {
+        return merchants;
     }
 
     public int getId() {
